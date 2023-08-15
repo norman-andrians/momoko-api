@@ -1,4 +1,5 @@
 import axios from "axios";
+import chalk from "chalk";
 
 export const getAnime = async (): Promise<any> => {
     try {
@@ -17,12 +18,10 @@ export const getAnimeById = async (id: number): Promise<any> => {
     }
     catch (error) {
         if (error.response) {
-            if (error.response.status == 492) {
-                console.log("GET anime error: too many request");
+            if (error.response.status == 429) {
+                console.log(chalk.red("GET anime error: too many request"));
             }
-            else {
-                console.log("GET anime error: " + error.response.status);
-            }
+            console.log(chalk.red("GET anime error status: " + error.response.status));
         }
         throw error;
     }

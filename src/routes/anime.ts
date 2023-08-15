@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import { getAnime, getAnimeById, getAnimeFullById } from "../helpers/fetchAnime";
+import chalk from "chalk";
 
 const router = Router();
 const _RATE_DELAY: number = 800;
@@ -13,7 +14,7 @@ router.get('/anime', async (req: Request, res: Response) => {
 
         for (let id of mal_ids) {
             await new Promise(resolve => setTimeout(resolve, _RATE_DELAY));
-            console.log(`GET anime id: ${id}`);
+            console.log(`GET anime id: ` + chalk.yellow(id));
 
             try {
                 const data = await getAnimeById(id);
