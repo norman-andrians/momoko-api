@@ -16,7 +16,15 @@ export const getAnimeById = async (id: number): Promise<any> => {
         return data.data;
     }
     catch (error) {
-        console.error(error);
+        if (error.response) {
+            if (error.response.status == 492) {
+                console.log("GET anime error: too many request");
+            }
+            else {
+                console.log("GET anime error: " + error.response.status);
+            }
+        }
+        throw error;
     }
 }
 

@@ -2,24 +2,28 @@ import { Router, Request, Response } from "express";
 import { getAnime, getAnimeById, getAnimeFullById } from "../helpers/fetchAnime";
 
 const router = Router();
-const _RATE_DELAY: number = 1000;
+const _RATE_DELAY: number = 800;
 
 router.get('/anime', async (req: Request, res: Response) => {
     const mal_ids: any = req.query.mal_id;
 
     if (mal_ids) {
         const datas: any[] = [];
+        console.log("GET anime data from api.jikan.moe...");
 
         for (let id of mal_ids) {
             await new Promise(resolve => setTimeout(resolve, _RATE_DELAY));
+            console.log(`GET anime id: ${id}`);
 
             try {
                 const data = await getAnimeById(id);
-                datas.push(data);
+                datas.push(data.data);
             }
             catch (error) {
-                console.error(error);
-                return res.sendStatus(400);
+                if (error.response) {
+                    if (error.response.status != 429)
+                        return res.sendStatus(400);
+                }
             }
         }
 
@@ -30,12 +34,16 @@ router.get('/anime', async (req: Request, res: Response) => {
                 data: datas
             });
         }
+
+        console.log("GET anime complete");
+        if (datas.includes(null)) {
+            console.log("But there's a null object");
+        }
         
         return res.status(200).json(datas);
     }
 
     try {
-
         const anime = await getAnime();
 
         res.status(200).json({
