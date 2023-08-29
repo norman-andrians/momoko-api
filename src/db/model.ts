@@ -1,0 +1,42 @@
+import mongoose from "mongoose";
+
+const AnimeSchema = new mongoose.Schema({
+    mal_id: { type: Number, require: true },
+    url: { type: String },
+    images: { type: Object },
+    trailer: { type: Object },
+    approved: { type: Boolean },
+    titles: { type: Array },
+    title: { type: String, require: true },
+    title_english: { type: String },
+    title_japanese: { type: String },
+    title_synonyms: { type: Array },
+    type: { type: String },
+    source: { type: String },
+    episodes: { type: Number },
+    status: { type: String },
+    airing: { type: Boolean },
+    aired: { type: Object },
+    duration: { type: String },
+    rating: { type: String },
+    score: { type: Number },
+    scored_by: { type: Number },
+    rank: { type: Number },
+    popularity: { type: Number },
+    members: { type: Number },
+    favorites: { type: Number },
+    synopsis: { type: String },
+    background: { type: String },
+    season: { type: String },
+    year: { type: String },
+    broadcast: { type: Object },
+    producers: { type: Array },
+    licensors: { type: Array },
+    studios: { type: Array },
+    genres: { type: Array },
+    explicit_genres: { type: Array },
+    themes: { type: Array },
+    demographics: { type: Array }
+});
+
+export const AnimeModel = mongoose.model('anime_stored', AnimeSchema);
