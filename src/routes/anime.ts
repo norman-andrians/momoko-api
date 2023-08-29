@@ -16,11 +16,11 @@ router.get('/anime', async (req: Request, res: Response) => {
         for (let id of mal_ids) {
             await new Promise(resolve => setTimeout(resolve, _RATE_DELAY));
             console.log(`GET anime id: ` + chalk.yellow(id));
-	    console.log('GET https://api.jikan.moe/v4/anime/' + id);
+            console.log('GET https://api.jikan.moe/v4/anime/' + id);
 
             try {
                 const { data } = await getAnimeById(id);
-		await InsertAnime(data);
+                await InsertAnime(data);
                 datas.push(data);
             }
             catch (error) {
@@ -28,7 +28,7 @@ router.get('/anime', async (req: Request, res: Response) => {
                     if (error.response.status != 429)
                         return res.sendStatus(400);
                 }
-		console.error(chalk.red(error));
+                console.error(chalk.red(error));
             }
         }
 
