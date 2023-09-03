@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import axios from 'axios';
 import cors from 'cors';
 import mongoose from 'mongoose';
+import * as dotenv from 'dotenv';
 
 import anime from "./routes/anime";
 import chalk from 'chalk';
@@ -10,12 +11,14 @@ import chalk from 'chalk';
 const app = express();
 const port = 6969;
 
+dotenv.config();
+
 app.use(cors());
 app.use(bodyParser.json());
 
 app.use('/', anime);
 
-const MONGO_URI = "mongodb://localhost:27017/momoko";
+const MONGO_URI = process.env.MONGO_URI || process.env.LOCAL_MONGO_URI;
 
 mongoose.Promise = Promise;
 mongoose.connect(MONGO_URI);
