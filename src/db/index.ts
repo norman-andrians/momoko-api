@@ -18,8 +18,26 @@ export const InsertAnime = async (data: object) => {
     }
 }
 
-export const GetAnimeById = async (id: number) => {
-	// try catch
-	// find one
-	// return the data
+export const GetAnimeIdByIds = async (ids: number[]) => {
+    try {
+        const anime = await AnimeModel.find({ mal_id: { $in: ids } }, { mal_id: 1 });
+        return anime;
+    }
+    catch (error) {
+        console.error(chalk.red(error));
+        console.error(chalk.red("Failed to find data from the database"));
+        throw error;
+    }
+}
+
+
+export const GetAnimeByIds = async (ids: number[]) => {
+    try {
+        return await AnimeModel.find({ mal_id: { $in: ids } });
+    }
+    catch (error) {
+        console.error(chalk.red(error));
+        console.error(chalk.red("Failed to find data from the database"));
+        throw error;
+    }
 }
