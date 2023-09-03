@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import { getAnime, getAnimeById, getAnimeFullById } from "../helpers/fetchAnime";
 import { InsertAnime, GetAnimeIdByIds, GetAnimeByIds } from "../db";
+import { BatConsole } from "../consoles";
 import chalk from "chalk";
 
 const router = Router();
@@ -8,8 +9,11 @@ const _RATE_DELAY: number = 800;
 
 router.get('/anime', async (req: Request, res: Response) => {
     const mal_ids: any = req.query.mal_id;
+    const req_id: number = Math.floor((Math.random() * 8000) + 1000);
+    const batconsole = new BatConsole(req_id);
 
     if (mal_ids) {
+        batconsole.log("GET anime ids:", mal_ids);
         /*
          * Here's the algorithm
          * first retrieve the data from the database based on the request
@@ -37,22 +41,25 @@ router.get('/anime', async (req: Request, res: Response) => {
             const fetchunique = Array.from(new Set(fetchthat));
 
             if (fetchunique.length > 0) {
-                console.log(chalk.yellow(`There are ${fetchunique.length} anime need to add`));
-                console.log("Data requested:", mal_ids);
-                console.log("Data required:", fetchunique);
-                console.log("GET anime data from api.jikan.moe...");
+                batconsole.log(chalk.yellow(`There are ${fetchunique.length} anime need to add`));
+                batconsole.log("Data required:", fetchunique);
+                batconsole.log("GET anime data from api.jikan.moe...");
 
                 for (let id of fetchunique) {
                     await new Promise(resolve => setTimeout(resolve, _RATE_DELAY));
     
-                    console.log(`GET anime id: ` + chalk.yellow(id));
-                    console.log('GET ' + chalk.cyan('https://api.jikan.moe/v4/anime/' + id));
+                    batconsole.log('GET ' + chalk.cyan('https://api.jikan.moe/v4/anime/' + id) + '...');
     
                     const { data } = await getAnimeById(id);
                     await InsertAnime(data);
     
-                    console.log(chalk.yellow(`GET id: ${id}. Complete`));
+                    batconsole.log(chalk.yellow(`GET id: ${id}. Complete`));
                 }
+
+                batconsole.log(chalk.green(`GET anime data from jikan API complete`));
+            }
+            else {
+                batconsole.log("GET anime from database...");
             }
 
             const data = await GetAnimeByIds(mal_ids);
@@ -69,8 +76,7 @@ router.get('/anime', async (req: Request, res: Response) => {
                 console.log("But there's a null object");
             }
 
-            console.log(chalk.green(`GET anime data from jikan API complete`));
-            console.log("Waiting for next request");
+            batconsole.log("GET anime complete");
             
             return res.status(200).json(data);
         }
