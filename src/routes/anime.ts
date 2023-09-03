@@ -30,15 +30,19 @@ router.get('/anime', async (req: Request, res: Response) => {
 
             // now find if there are missing anime items
             // prevent duplication of entities
+            // filter which is still not stored in the database
             const fetchthat = [...mal_ids].filter(mal_id => !findedId.includes(parseFloat(mal_id)));
 
-            if (fetchthat.length > 0) {
-                console.log(chalk.yellow(`There are ${fetchthat.length} anime need to add`));
+            // remove duplicates, make this id a unique number
+            const fetchunique = Array.from(new Set(fetchthat));
+
+            if (fetchunique.length > 0) {
+                console.log(chalk.yellow(`There are ${fetchunique.length} anime need to add`));
                 console.log("Data requested:", mal_ids);
-                console.log("Data required:", findedId);
+                console.log("Data required:", fetchunique);
                 console.log("GET anime data from api.jikan.moe...");
 
-                for (let id of fetchthat) {
+                for (let id of fetchunique) {
                     await new Promise(resolve => setTimeout(resolve, _RATE_DELAY));
     
                     console.log(`GET anime id: ` + chalk.yellow(id));
